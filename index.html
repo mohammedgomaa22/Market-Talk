@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <title>Market Talk | احترف صناعة الفيديو والمونتاج بالذكاء الاصطناعي</title>
+  <meta name="description" content="باقة متكاملة تجمع بين إنتاج الفيديوهات الإعلانية بالـ AI والمونتاج الاحترافي عبر الهاتف — تعلّم بأسلوب تطبيقي وحقق نتائج احترافية." />
+  <meta name="theme-color" content="#f7f9fc" />
+  <link rel="shortcut icon" href="./assets/images/logo.png" type="image/png" />
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('mt-theme');
+        var theme = saved || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0B416E',
+            secondary: '#F68B1E',
+            accent: '#FFB81C',
+            surface: '#ffffff',
+            page: '#f7f9fc',
+            muted: '#5b6b7c',
+            line: '#d8e0ea',
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+          }
+        },
+        container: {
+          center: true,
+          padding: '1rem',
+          screens: {
+            sm: '540px',
+            md: '720px',
+            lg: '960px',
+            xl: '1140px',
+            '2xl': '1320px'
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="./src/css/style.css">
+</head>
+<body class="font-cairo bg-page text-[var(--text)] antialiased">
+
+  <!-- ========== NAV ========== -->
+  <header class="fixed top-0 inset-x-0 z-40 site-header">
+    <div class="container flex items-center justify-between py-5">
+      <a href="#hero" class="flex items-center gap-3 group" aria-label="Market Talk">
+        <img src="./assets/images/logo.png" alt="Market Talk" class="h-11 w-11 object-contain" onerror="this.style.display='none'">
+        <span class="text-xl md:text-2xl font-extrabold tracking-tight text-primary">
+          Market <span class="text-secondary">Talk</span>
+        </span>
+      </a>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button
+          type="button"
+          id="themeToggle"
+          class="theme-toggle"
+          aria-label="تبديل الوضع الليلي/النهاري"
+          title="تبديل الثيم"
+        >
+          <i data-lucide="moon" class="icon-moon w-5 h-5"></i>
+          <i data-lucide="sun" class="icon-sun w-5 h-5"></i>
+        </button>
+        <button type="button" data-open-modal="modal-bundle" class="btn-cta text-sm px-4 py-2.5 hidden sm:inline-flex">
+          الباقة الشاملة
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== 1. HERO ========== -->
+  <section id="hero" class="hero-bg relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
+    <div class="hero-particles" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="hero-shape hero-shape-1" aria-hidden="true"></div>
+    <div class="hero-shape hero-shape-2" aria-hidden="true"></div>
+
+    <div class="container relative z-10">
+      <div class="max-w-3xl mx-auto text-center" data-aos="fade-up">
+        <p class="text-secondary font-bold text-lg md:text-xl mb-4 tracking-wide">Market Talk</p>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight mb-6 text-primary">
+          احترف صناعة الفيديو والمونتاج بالذكاء الاصطناعي
+        </h1>
+        <p class="text-muted text-base md:text-lg leading-8 mb-8 max-w-2xl mx-auto">
+          باقة متكاملة تجمع بين إنتاج الفيديوهات الإعلانية بالـ AI والمونتاج الاحترافي عبر الهاتف — تعلم بأسلوب تطبيقي عملي وحقق نتائج احترافية بأقل وقت وجهد.
+        </p>
+        <button type="button" data-open-modal="modal-bundle" class="btn-cta btn-cta-lg mb-4">
+          احصل على الباقة الشاملة — ٣٩ د.ك
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </button>
+        <p class="text-sm text-muted flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+          <span class="inline-flex items-center gap-1"><i data-lucide="badge-check" class="w-4 h-4 text-secondary"></i> شهادة إتمام</span>
+          <span class="opacity-40">·</span>
+          <span class="inline-flex items-center gap-1"><i data-lucide="video" class="w-4 h-4 text-secondary"></i> فيديوهات مسجلة</span>
+          <span class="opacity-40">·</span>
+          <span class="inline-flex items-center gap-1"><i data-lucide="clock" class="w-4 h-4 text-secondary"></i> تعلم في أي وقت</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 2. TRAINER ========== -->
+  <section id="trainer" class="section-pad trainer-section">
+    <div class="container">
+      <div class="trainer-card max-w-5xl mx-auto" data-aos="fade-up">
+        <div class="trainer-media">
+          <div class="trainer-photo-wrap">
+            <img
+              src="./assets/images/pro.jpg"
+              alt="عباس خالد الغضبان"
+              class="trainer-photo"
+              width="280"
+              height="280"
+            >
+          </div>
+          <div class="trainer-identity">
+            <h3 class="trainer-name">عباس خالد الغضبان</h3>
+            <p class="trainer-role">مؤسس Market Talk</p>
+          </div>
+          <div class="trainer-stats">
+            <div class="trainer-stat">
+              <p class="trainer-stat-value"><span data-counter="66" data-suffix=" ألف">0</span></p>
+              <p class="trainer-stat-label">متابع</p>
+            </div>
+            <div class="trainer-stat-divider" aria-hidden="true"></div>
+            <div class="trainer-stat">
+              <p class="trainer-stat-value"><span data-counter="4" data-suffix=" شهور">0</span></p>
+              <p class="trainer-stat-label">وصول سريع</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="trainer-content">
+          <h2 class="section-title trainer-title">مقدّم الدورات</h2>
+          <div class="trainer-bio">
+            <p>مؤسس شركة Market Talk للدعاية والإعلان، ومتخصص في استخدام الذكاء الاصطناعي لتسهيل المهام وتحسين جودة العمل في مجالات متعددة.</p>
+            <p>أستاذ حاسوب وحاصل على ماجستير تكنولوجيا التعليم بتقدير امتياز، وأهتم بتبسيط التقنية وجعلها أداة عملية تساعد الناس في شغلهم اليومي.</p>
+            <p>خلال ٤ شهور وصلت إلى أكثر من ٦٦ ألف متابع، وقدمت استشارات ودورات VIP لجهات حكومية وشركات كبرى مثل هوندا الغانم والمكتبة الوطنية.</p>
+            <p>هدفي إني أساعد الناس ينجزون مهامهم بسهولة ويوصلون لنتائج احترافية بأقل وقت وجهد.</p>
+          </div>
+          <div class="trainer-badge">
+            <i data-lucide="target" class="w-5 h-5 mt-0.5 shrink-0"></i>
+            <span>هدفي: أساعد الناس ينجزون مهامهم بسهولة ويوصلون لنتائج احترافية بأقل وقت وجهد</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 3. COURSES ========== -->
+  <section id="courses" class="section-pad section-alt">
+    <div class="container">
+      <h2 class="section-title text-center mb-4" data-aos="fade-up">الدورات المتاحة</h2>
+      <p class="text-center text-muted mb-12 max-w-xl mx-auto" data-aos="fade-up" data-aos-delay="50">
+        اختر الدورة المناسبة لك، أو احصل على الباقة الشاملة بسعر أوفر
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <!-- Course 1 -->
+        <article class="card-surface p-6 md:p-7 flex flex-col" data-aos="fade-up" data-aos-delay="100">
+          <div class="course-icon course-icon-ai" aria-hidden="true">🎬</div>
+          <h3 class="text-lg md:text-xl font-extrabold leading-snug mb-3 text-primary">
+            إنتاج فيديوهات إعلانية احترافية بالذكاء الاصطناعي
+          </h3>
+          <p class="text-muted text-sm leading-7 mb-5 flex-1">
+            بساعة وحدة بس، بتتعلم تسوي فيديوهات احترافية بالذكاء الاصطناعي بشرح تطبيقي وعملي.
+          </p>
+          <div class="flex items-baseline gap-3 mb-4">
+            <span class="price-new text-2xl">٢٩ د.ك</span>
+            <span class="price-old">٥٩ د.ك</span>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="tag">شهادة إتمام</span>
+            <span class="tag">فيديوهات مسجلة</span>
+            <span class="tag">تعلم في أي وقت</span>
+          </div>
+          <button type="button" data-open-modal="modal-course-ai" class="btn-outline w-full">
+            مشاهدة التفاصيل
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </button>
+        </article>
+
+        <!-- Course 2 -->
+        <article class="card-surface p-6 md:p-7 flex flex-col" data-aos="fade-up" data-aos-delay="200">
+          <div class="course-icon course-icon-capcut" aria-hidden="true">✂️</div>
+          <h3 class="text-lg md:text-xl font-extrabold leading-snug mb-3 text-primary">
+            المونتاج الاحترافي بالهاتف باستخدام CapCut
+          </h3>
+          <p class="text-muted text-sm leading-7 mb-5 flex-1">
+            تعلم المونتاج بالهاتف بخطوات بسيطة: القص، المؤثرات، النصوص، والصوت — وإخراج فيديو جاهز للنشر على TikTok وInstagram.
+          </p>
+          <div class="flex items-baseline gap-3 mb-4">
+            <span class="price-new text-2xl">٢٩ د.ك</span>
+            <span class="price-old">٥٩ د.ك</span>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="tag">شهادة إتمام</span>
+            <span class="tag">فيديوهات مسجلة</span>
+            <span class="tag">تعلم في أي وقت</span>
+          </div>
+          <button type="button" data-open-modal="modal-course-capcut" class="btn-outline w-full">
+            مشاهدة التفاصيل
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 5. TESTIMONIALS ========== -->
+  <section id="testimonials" class="section-pad bg-page">
+    <div class="container">
+      <h2 class="section-title text-center mb-12" data-aos="fade-up">آراء المتدربين</h2>
+
+      <div class="swiper testimonials-swiper max-w-6xl mx-auto pb-12" data-aos="fade-up" data-aos-delay="100">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide h-auto">
+            <blockquote class="card-surface p-6 h-full flex flex-col">
+              <i data-lucide="quote" class="w-8 h-8 quote-icon mb-4"></i>
+              <p class="text-sm leading-7 text-muted flex-1 mb-5">
+                الدوره حيييل عجييييبه والله واستفتدت منها شغلات جديده ممتااازه جدا جدا
+              </p>
+              <footer class="font-bold text-secondary text-sm">معالي فاضل الظفيري</footer>
+            </blockquote>
+          </div>
+          <div class="swiper-slide h-auto">
+            <blockquote class="card-surface p-6 h-full flex flex-col">
+              <i data-lucide="quote" class="w-8 h-8 quote-icon mb-4"></i>
+              <p class="text-sm leading-7 text-muted flex-1 mb-5">
+                الدورة كانت مفيدة جداً للمبتدئين، والمحتوى واضح وسهل التطبيق. أسلوبك في الشرح يشجع على التفكير ويحول المعلومات إلى فهم عملي. من وجهة نظري تعتبر من أفضل الدورات، ومناسبة لمختلف الأعمار والتخصصات
+              </p>
+              <footer class="font-bold text-secondary text-sm">د. ضاحي العنزي</footer>
+            </blockquote>
+          </div>
+          <div class="swiper-slide h-auto">
+            <blockquote class="card-surface p-6 h-full flex flex-col">
+              <i data-lucide="quote" class="w-8 h-8 quote-icon mb-4"></i>
+              <p class="text-sm leading-7 text-muted flex-1 mb-5">
+                بصراحه ما حسيت بالملل لانه المميز بالدورة كانت بمقاس التلفون بالطول كأنه اشوف ريلز او سوشل ميديا والشرح والمعلومات جدا قويه استفدت جداااا يعطيك العافيه
+              </p>
+              <footer class="font-bold text-secondary text-sm">علي</footer>
+            </blockquote>
+          </div>
+          <div class="swiper-slide h-auto">
+            <blockquote class="card-surface p-6 h-full flex flex-col">
+              <i data-lucide="quote" class="w-8 h-8 quote-icon mb-4"></i>
+              <p class="text-sm leading-7 text-muted flex-1 mb-5">
+                دورة مختصرة وتعلمت اسوي فيديوهات بنفسي والشرح كان واضح ومرتب شكرا لك استاذ عباس
+              </p>
+              <footer class="font-bold text-secondary text-sm">مريم</footer>
+            </blockquote>
+          </div>
+        </div>
+        <div class="swiper-pagination testimonials-pagination !bottom-0"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 6. FAQ ========== -->
+  <section id="faq" class="section-pad section-alt">
+    <div class="container max-w-3xl">
+      <h2 class="section-title text-center mb-12" data-aos="fade-up">الأسئلة الشائعة</h2>
+
+      <div class="space-y-3" data-aos="fade-up" data-aos-delay="80">
+        <div class="faq-item">
+          <button type="button" class="faq-btn" aria-expanded="false">
+            <span>هل الدورات مباشرة أم مسجلة؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5"></i>
+          </button>
+          <div class="faq-panel">
+            <div class="faq-panel-inner">الدورات مسجلة بالكامل، تقدر تشاهدها في أي وقت يناسبك عبر تطبيق تنمية.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-btn" aria-expanded="false">
+            <span>هل أحتاج خبرة سابقة؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5"></i>
+          </button>
+          <div class="faq-panel">
+            <div class="faq-panel-inner">لا، الدورات مصممة للمبتدئين وتبدأ من الصفر بأسلوب بسيط وعملي.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-btn" aria-expanded="false">
+            <span>هل أحصل على شهادة؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5"></i>
+          </button>
+          <div class="faq-panel">
+            <div class="faq-panel-inner">نعم، تحصل على شهادة إتمام رسمية بعد إنهاء الدورة.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-btn" aria-expanded="false">
+            <span>ما هي طرق الدفع المتاحة؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5"></i>
+          </button>
+          <div class="faq-panel">
+            <div class="faq-panel-inner">نقبل Apple Pay، Visa، MasterCard، Google Pay، وجميع طرق الدفع المحلية في دول الخليج.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-btn" aria-expanded="false">
+            <span>هل الدورات متاحة مدى الحياة؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5"></i>
+          </button>
+          <div class="faq-panel">
+            <div class="faq-panel-inner">نعم، بمجرد الاشتراك تبقى الدورات متاحة لك دائماً.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 7. BUNDLE CTA ========== -->
+  <section id="bundle" class="section-pad bundle-section">
+    <div class="container" data-aos="fade-up">
+      <div class="bundle-card max-w-5xl mx-auto">
+        <div class="bundle-card-glow" aria-hidden="true"></div>
+
+        <div class="bundle-layout">
+          <!-- Price side -->
+          <div class="bundle-price-panel">
+            <span class="bundle-eyebrow">عرض الباقة الشاملة المميز</span>
+            <h2 class="bundle-heading">احصل على الدورتين + الكتاب الإلكتروني</h2>
+
+            <div class="bundle-price-box">
+              <span class="discount-badge">وفّر ١٩ د.ك — خصم ٣٣٪</span>
+              <p class="bundle-price price-glow">٣٩ <span>د.ك</span></p>
+              <p class="bundle-price-old">بدلاً من <span>٥٨ د.ك</span></p>
+            </div>
+
+            <button type="button" data-open-modal="modal-bundle" class="btn-cta btn-cta-lg bundle-cta-btn">
+              احجز مقعدك الآن — ٣٩ د.ك
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </button>
+
+            <div class="bundle-pay">
+              <p class="bundle-pay-label">طرق الدفع المتاحة</p>
+              <div class="pay-pills">
+                <span class="pay-pill">Apple Pay</span>
+                <span class="pay-pill">Visa</span>
+                <span class="pay-pill">MasterCard</span>
+                <span class="pay-pill">Google Pay</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Features side -->
+          <div class="bundle-features-panel">
+            <p class="bundle-features-title">ماذا تتضمن الباقة؟</p>
+            <ul class="bundle-features">
+              <li>
+                <span class="bundle-feature-icon"><i data-lucide="clapperboard" class="w-5 h-5"></i></span>
+                <div>
+                  <strong>دورة الفيديوهات الإعلانية بالـ AI</strong>
+                  <span>إنتاج محتوى احترافي بأسلوب تطبيقي</span>
+                </div>
+              </li>
+              <li>
+                <span class="bundle-feature-icon"><i data-lucide="smartphone" class="w-5 h-5"></i></span>
+                <div>
+                  <strong>دورة المونتاج بـ CapCut</strong>
+                  <span>مونتاج جاهز للنشر على TikTok وInstagram</span>
+                </div>
+              </li>
+              <li>
+                <span class="bundle-feature-icon"><i data-lucide="book-open" class="w-5 h-5"></i></span>
+                <div>
+                  <strong>الكتاب الإلكتروني المرافق</strong>
+                  <span>مرجع عملي يدعمك أثناء التطبيق</span>
+                </div>
+              </li>
+              <li>
+                <span class="bundle-feature-icon"><i data-lucide="badge-check" class="w-5 h-5"></i></span>
+                <div>
+                  <strong>شهادتا إتمام رسميتان</strong>
+                  <span>شهادة لكل دورة بعد الإنهاء</span>
+                </div>
+              </li>
+              <li>
+                <span class="bundle-feature-icon"><i data-lucide="infinity" class="w-5 h-5"></i></span>
+                <div>
+                  <strong>وصول مدى الحياة</strong>
+                  <span>المحتوى متاح لك في أي وقت</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 10. FOOTER ========== -->
+  <footer class="site-footer pt-10 pb-28">
+    <div class="container flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
+      <div>
+        <p class="font-extrabold text-lg text-primary">Market <span class="text-secondary">Talk</span></p>
+        <p class="text-sm text-muted mt-1">© <span id="year">2026</span> Market Talk. جميع الحقوق محفوظة.</p>
+      </div>
+      <a
+        href="https://wa.me/201026053956"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-sm text-muted hover:text-secondary transition-colors"
+      >
+        مبرمج / محمد جمعة
+      </a>
+    </div>
+  </footer>
+
+  <!-- ========== 9. STICKY BAR ========== -->
+  <div id="stickyBar" class="sticky-bar" role="complementary" aria-label="عرض سريع للباقة">
+    <div class="container flex items-center justify-between gap-3 max-w-3xl">
+      <p class="text-sm md:text-base font-bold">
+        الباقة الشاملة — <span class="text-secondary">٣٩ د.ك فقط</span>
+      </p>
+      <button type="button" data-open-modal="modal-bundle" class="btn-cta text-sm px-4 py-2.5 shrink-0">
+        احجز الآن
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== 4. MODAL: AI Course ========== -->
+  <div id="modal-course-ai" class="modal-overlay" data-modal role="dialog" aria-modal="true" aria-labelledby="ai-title">
+    <div class="modal-box relative">
+      <button type="button" class="modal-close" data-close-modal aria-label="إغلاق">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <p class="text-2xl mb-3" aria-hidden="true">🎬</p>
+      <h3 id="ai-title" class="text-xl font-extrabold leading-snug mb-3 pe-8">
+        إنتاج فيديوهات إعلانية احترافية بالذكاء الاصطناعي
+      </h3>
+      <p class="text-muted text-sm leading-7 mb-4">
+        بساعة وحدة بس، بتتعلم تسوي فيديوهات احترافية بالذكاء الاصطناعي بشرح تطبيقي وعملي.
+      </p>
+      <div class="flex items-baseline gap-3 mb-6">
+        <span class="price-new text-2xl">٢٩ د.ك</span>
+        <span class="price-old">٥٩ د.ك</span>
+      </div>
+
+      <h4 class="font-bold mb-3 flex items-center gap-2">
+        <i data-lucide="gift" class="w-4 h-4 text-secondary"></i>
+        ما ستحصل عليه
+      </h4>
+      <ul class="check-list mb-6 text-sm">
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>فيديوهات مسجلة وجاهزة في تطبيق تنمية</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>شهادة إتمام رسمية</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>إمكانية التعلّم في أي وقت ومكان</span></li>
+      </ul>
+
+      <h4 class="font-bold mb-3 flex items-center gap-2">
+        <i data-lucide="users" class="w-4 h-4 text-secondary"></i>
+        لمن هذه الدورة
+      </h4>
+      <ul class="check-list mb-8 text-sm">
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>روّاد الأعمال وأصحاب المشاريع</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>الموظفون في الشركات والجهات الحكومية</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>الطلبة والباحثون</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>المصممون والمونتيرز والفريلانسرز</span></li>
+      </ul>
+
+      <a href="#" class="btn-cta w-full">اشترك الآن — ٢٩ د.ك</a>
+    </div>
+  </div>
+
+  <!-- ========== 4. MODAL: CapCut Course ========== -->
+  <div id="modal-course-capcut" class="modal-overlay" data-modal role="dialog" aria-modal="true" aria-labelledby="capcut-title">
+    <div class="modal-box relative">
+      <button type="button" class="modal-close" data-close-modal aria-label="إغلاق">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <p class="text-2xl mb-3" aria-hidden="true">✂️</p>
+      <h3 id="capcut-title" class="text-xl font-extrabold leading-snug mb-3 pe-8">
+        المونتاج الاحترافي بالهاتف باستخدام CapCut
+      </h3>
+      <p class="text-muted text-sm leading-7 mb-4">
+        تعلم المونتاج بالهاتف باستخدام CapCut بخطوات بسيطة: القص، المؤثرات، النصوص، والصوت — وإخراج فيديو جاهز للنشر على TikTok وInstagram.
+      </p>
+      <div class="flex items-baseline gap-3 mb-6">
+        <span class="price-new text-2xl">٢٩ د.ك</span>
+        <span class="price-old">٥٩ د.ك</span>
+      </div>
+
+      <h4 class="font-bold mb-3 flex items-center gap-2">
+        <i data-lucide="gift" class="w-4 h-4 text-secondary"></i>
+        ما ستحصل عليه
+      </h4>
+      <ul class="check-list mb-6 text-sm">
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>فيديوهات مسجلة وجاهزة في تطبيق تنمية</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>شهادة إتمام رسمية</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>إمكانية التعلّم في أي وقت ومكان</span></li>
+      </ul>
+
+      <h4 class="font-bold mb-3 flex items-center gap-2">
+        <i data-lucide="users" class="w-4 h-4 text-secondary"></i>
+        لمن هذه الدورة
+      </h4>
+      <ul class="check-list mb-8 text-sm">
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>المبتدئين الراغبين بدخول مجال صناعة المحتوى</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>صناع المحتوى الذين يريدون تطوير جودة فيديوهاتهم</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>أصحاب المشاريع الصغيرة لتسويق منتجاتهم بالمحتوى</span></li>
+        <li><i data-lucide="check" class="w-4 h-4"></i><span>الموظفين والطلاب الباحثين عن مهارة إضافية ومصدر دخل</span></li>
+      </ul>
+
+      <a href="#" class="btn-cta w-full">اشترك الآن — ٢٩ د.ك</a>
+    </div>
+  </div>
+
+  <!-- ========== 8. MODAL: Bundle ========== -->
+  <div id="modal-bundle" class="modal-overlay" data-modal role="dialog" aria-modal="true" aria-labelledby="bundle-title">
+    <div class="modal-box relative" style="max-width:520px">
+      <button type="button" class="modal-close" data-close-modal aria-label="إغلاق">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <p class="text-secondary font-bold mb-2">عرض الباقة الشاملة المميز</p>
+      <h3 id="bundle-title" class="text-xl font-extrabold leading-snug mb-4 pe-8">
+        احصل على الدورتين + الكتاب الإلكتروني
+      </h3>
+
+      <div class="mb-3">
+        <span class="discount-badge">وفّر ١٩ د.ك — خصم ٣٣٪</span>
+      </div>
+
+      <p class="text-5xl font-extrabold text-secondary price-glow mb-1">٣٩ د.ك</p>
+      <p class="price-old mb-6">بدلاً من ٥٨ د.ك</p>
+
+      <ul class="check-list mb-6 text-sm">
+        <li><i data-lucide="check-circle-2" class="w-4 h-4"></i><span>دورة إنتاج فيديوهات إعلانية بالذكاء الاصطناعي</span></li>
+        <li><i data-lucide="check-circle-2" class="w-4 h-4"></i><span>دورة المونتاج الاحترافي بالهاتف باستخدام CapCut</span></li>
+        <li><i data-lucide="check-circle-2" class="w-4 h-4"></i><span>الكتاب الإلكتروني المرافق</span></li>
+        <li><i data-lucide="check-circle-2" class="w-4 h-4"></i><span>شهادتا إتمام رسميتان</span></li>
+        <li><i data-lucide="check-circle-2" class="w-4 h-4"></i><span>وصول مدى الحياة للمحتوى</span></li>
+      </ul>
+
+      <div class="pay-pills mb-6 justify-start">
+        <span class="pay-pill">Apple Pay</span>
+        <span class="pay-pill">Visa</span>
+        <span class="pay-pill">MasterCard</span>
+        <span class="pay-pill">Google Pay</span>
+      </div>
+
+      <a href="#" class="btn-cta btn-cta-lg w-full">احجز مقعدك الآن — ٣٩ د.ك</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script defer src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script defer src="./src/js/main.js"></script>
+</body>
+</html>
