@@ -14,7 +14,6 @@ dist-ssr
 *.local
 
 # Editor directories and files
-tailwind.config.js
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -24,3 +23,7 @@ tailwind.config.js
 *.njsproj
 *.sln
 *.sw?
+
+# Visual verification screenshots
+_proof_*.png
+_shot_*.png

@@ -1,0 +1,65 @@
+---
+description: Project-wide frontend, design, performance, accessibility, and code-organization rules for Market Talk.
+alwaysApply: true
+---
+
+# Market Talk frontend rules
+
+Apply these rules whenever creating or editing Market Talk code. Inspect the existing files before changing structure, styles, or behavior. Preserve the current page content, confirmed offer details, external payment flow, and integrations unless the user explicitly asks to change them. Never modify `Project_Files&Data`.
+
+## Design and file organization
+
+- Build mobile-first layouts and verify the design at narrow mobile, tablet, and desktop widths. Prevent horizontal overflow and keep text, controls, and media usable at every width.
+- Follow the existing project structure: HTML in `index.html`, JavaScript in `src/js/main.js`, and CSS in `src/css/style.css`. Put each kind of code in its corresponding file; do not add inline styles or inline scripts for ordinary page code.
+- Prefer Tailwind utilities for layout and styling. Add CSS only for reusable base rules or cases Tailwind cannot express cleanly.
+- Keep the DOM shallow and the implementation small. Do not add dependencies, frameworks, or libraries without an explicit request.
+- Preserve the existing Tailwind CDN setup and keep `tailwind.config` before the Tailwind CDN script. Do not add another Tailwind configuration file unless the build setup changes and requires one.
+- Keep the existing global utilities script intact. Put project JavaScript in `src/js/main.js`; use an inline script only for a tiny snippet that must execute in place or before another script, such as the Tailwind CDN configuration.
+
+## Brand colors and typography
+
+- Use only the project brand colors and the font families already registered in `src/css/style.css`. Never introduce a new font or redefine the brand palette for a section.
+- The current CSS variables are `--mt-blue`, `--mt-yellow`, `--mt-ink`, `--mt-yellow-soft`, `--mt-sky`, `--mt-bright`, and `--mt-page`. The current Tailwind aliases include `brand.blue`, `brand.yellow`, `brand.ink`, `brand.paper`, and the other `brand.*` values in `index.html`.
+- Some requests may refer to `primary` and `secondary`. In the current project those names are not defined: map `primary` to the existing blue token and `secondary` to the existing yellow token only if aliases are needed; do not add new color values or use undefined color classes.
+- Use `Lyon Arabic Text` for body copy and `Lyon Arabic Display` for display headings through the existing Tailwind font aliases. Keep `font-display: swap` and the current local font-face declarations.
+- Maintain readable contrast: use dark text on light backgrounds and white text only on sufficiently dark backgrounds. Target at least 4.5:1 contrast for text and keep visible focus styles.
+
+## Images and icons
+
+- Do not generate, download, convert, or add image files. Suggest suitable image assets when needed and let the user provide them.
+- For new image placeholders, use the short path format requested by the user, such as `images/hero.webp`. For an existing project asset, use its verified path so it loads correctly; do not rewrite valid asset paths into broken ones.
+- Add descriptive `alt` text to informative images. Use `alt=""` for decorative images. Set `loading="lazy"` on non-critical images. For a critical hero image, suggest a preload link instead of adding one without approval.
+- Prefer WebP when suggesting image exports. Recommend responsive widths of about 1200–1600 px for desktop and 600–800 px for mobile; do not create those exports.
+- Do not use SVG, including inline SVG icons. Reuse an icon font only if its stylesheet is already loaded; otherwise use an existing raster asset or a simple text/CSS treatment.
+
+## Motion
+
+- Use AOS with `data-aos` attributes only when AOS is already loaded and available in the project. Do not add another animation library or implement decorative motion in custom JavaScript.
+- Use motion sparingly. Respect `prefers-reduced-motion` and avoid long or essential animations.
+- AOS is not currently loaded by `index.html`; do not assume it is available or add it from a CDN without the user's approval.
+
+## Performance and compatibility
+
+- Keep pages lightweight: avoid unnecessary wrappers, large utility piles, duplicate assets, and non-essential scripts.
+- Do not add new render-blocking external CSS or JavaScript in `<head>`. Use `defer` or `async` for scripts where ordering permits, or place them before `</body>`. Preserve the existing Tailwind configuration-before-CDN order.
+- Use HTTPS for external resources. Give links with `target="_blank"` `rel="noopener noreferrer"`. Check that external resources use HTTPS and do not create mixed content.
+- Avoid deprecated browser APIs and console errors. Check that asset URLs resolve and that interactive controls work with keyboard and touch input.
+- Recommend, but do not configure in page code, production caching headers and gzip/Brotli compression. Recommend appropriate WebP exports and `font-display: swap` without changing the current font setup.
+
+## Semantics, SEO, and accessibility
+
+- Use semantic landmarks and elements: one `main`, meaningful `header`/`nav`/`footer`, and `section` or `article` elements where appropriate. Do not add redundant ARIA roles to native landmarks.
+- Keep heading levels in order. Use descriptive link and button names, labels for form controls, and ARIA attributes only when native HTML does not provide the needed semantics.
+- Add a keyboard-accessible skip link near the start of the page if one is not already present. Preserve logical tab order and provide a clearly visible `:focus-visible` state.
+- Write descriptive `alt` text for informative images and accessible names for controls. Ensure text and controls have sufficient contrast and are not distinguished by color alone.
+- Add or change page-wide `<title>` and meta description only in the document head, not inside a section. Suggest suitable text when needed; do not invent unconfirmed product claims.
+- Suggest schema.org JSON-LD (such as Product or FAQ) only when relevant. Do not insert it without an explicit implementation request.
+
+## Lighthouse and review checklist
+
+For every new section, check responsive behavior, image loading attributes, semantic structure, alt text, keyboard access, focus visibility, contrast, reduced motion, external-link safety, and console errors. Suggest hero image preload, responsive image variants, caching, and compression when useful; do not silently add assets or server configuration.
+
+## Comments and markup style
+
+- Write all code comments in English. Match the existing section-marker style in `index.html` (for example, `<!-- ===== START SECTION ===== -->`) and use concise English comments in CSS and JavaScript.
+- Keep Arabic UI copy natural and aligned with the approved content. Do not publish placeholders or unconfirmed details as facts.

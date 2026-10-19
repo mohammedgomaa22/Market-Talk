@@ -1,246 +1,614 @@
-document.addEventListener('DOMContentLoaded', function () {
-  if (typeof AOS !== 'undefined') {
-    AOS.init({
-      duration: 700,
-      once: true,
-      offset: 60,
-      easing: 'ease-out-cubic'
-    });
+// Single checkout URL for every purchase link on the page.
+// Confirmed bundle checkout (both courses + the book) from the project notes.
+const PAYMENT_URL = "https://abbascourses.tenmeya.com/step/all-course-checkout/";
+
+// Deadline for the 39 د.ك offer. ISO 8601 with a time zone.
+// TEST ONLY — 28 Oct 2026, 23:59 Kuwait time. Replace this with the confirmed
+// deadline before publishing. After it passes, every [data-price] switches to 58.
+const OFFER_END = "2026-10-28T23:59:59+03:00";
+
+const checkoutLinks = document.querySelectorAll("[data-checkout]");
+const hasPaymentUrl = typeof PAYMENT_URL === "string" && PAYMENT_URL.startsWith("https://");
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+checkoutLinks.forEach((link) => {
+  if (!hasPaymentUrl) {
+    link.removeAttribute("href");
+    link.removeAttribute("target");
+    link.setAttribute("aria-disabled", "true");
+    return;
   }
 
-  if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-  }
+  link.href = PAYMENT_URL;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
 
-  initModals();
-  initFaq();
-  initStickyBar();
-  initCounters();
-  initTestimonialsSwiper();
-  initYear();
-  initThemeToggle();
-  initHeaderScroll();
+  link.addEventListener("pointerdown", (event) => {
+    if (reduceMotion || event.pointerType === "mouse") return;
+    if (typeof navigator.vibrate === "function") navigator.vibrate(12);
+  });
 });
 
-/* ========== Sticky header shadow ========== */
-function initHeaderScroll() {
-  const header = document.querySelector('.site-header');
-  if (!header) return;
+primeHeroVideo();
+initHeroMotion();
+initOffer();
+initProofMotion();
+initBundleMotion();
+initTestimonialsMotion();
+initStudentOutputsMotion();
 
-  const onScroll = function () {
-    if (window.scrollY > 12) {
-      header.classList.add('is-scrolled');
-    } else {
-      header.classList.remove('is-scrolled');
-    }
-  };
+function primeHeroVideo() {
+  const video = document.querySelector(".hero-video");
+  if (!video) return;
+  video.muted = true;
+  initVideoControls(video);
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-}
-
-/* ========== Theme toggle ========== */
-function initThemeToggle() {
-  const btn = document.getElementById('themeToggle');
-  const metaTheme = document.querySelector('meta[name="theme-color"]');
-  if (!btn) return;
-
-  const applyTheme = function (theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    try {
-      localStorage.setItem('mt-theme', theme);
-    } catch (e) {}
-
-    if (metaTheme) {
-      metaTheme.setAttribute('content', theme === 'dark' ? '#0a0a0f' : '#f7f9fc');
-    }
-
-    btn.setAttribute(
-      'aria-label',
-      theme === 'dark' ? 'التبديل إلى الوضع الفاتح' : 'التبديل إلى الوضع الداكن'
-    );
-
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  };
-
-  btn.addEventListener('click', function () {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    applyTheme(current === 'dark' ? 'light' : 'dark');
-  });
-
-  applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
-}
-
-/* ========== Modals ========== */
-function initModals() {
-  const overlays = document.querySelectorAll('[data-modal]');
-
-  document.querySelectorAll('[data-open-modal]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      const id = btn.getAttribute('data-open-modal');
-      openModal(id);
-    });
-  });
-
-  overlays.forEach(function (overlay) {
-    overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) closeModal(overlay.id);
-    });
-
-    const closeBtn = overlay.querySelector('[data-close-modal]');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function () {
-        closeModal(overlay.id);
-      });
-    }
-  });
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-      overlays.forEach(function (overlay) {
-        if (overlay.classList.contains('is-open')) closeModal(overlay.id);
-      });
-    }
-  });
-}
-
-function openModal(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.add('is-open');
-  document.body.classList.add('modal-open');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function closeModal(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.remove('is-open');
-  if (!document.querySelector('.modal-overlay.is-open')) {
-    document.body.classList.remove('modal-open');
+  if (reduceMotion) {
+    video.removeAttribute("autoplay");
+    video.pause();
+    return;
   }
+  const attempt = video.play();
+  if (attempt && typeof attempt.catch === "function") attempt.catch(function () {});
 }
 
-/* ========== FAQ Accordion ========== */
-function initFaq() {
-  document.querySelectorAll('.faq-item').forEach(function (item) {
-    const btn = item.querySelector('.faq-btn');
-    const panel = item.querySelector('.faq-panel');
-    if (!btn || !panel) return;
+// Play/pause and sound buttons; labels and states follow the real video state.
+function initVideoControls(video) {
+  const box = document.querySelector(".hero-controls");
+  const soundBtn = document.querySelector("[data-video-sound]");
+  const playBtn = document.querySelector("[data-video-toggle]");
+  if (!box || !soundBtn || !playBtn) return;
 
-    btn.addEventListener('click', function () {
-      const isOpen = item.classList.contains('is-open');
+  const soundText = soundBtn.querySelector(".hero-ctl-text");
 
-      document.querySelectorAll('.faq-item.is-open').forEach(function (openItem) {
-        if (openItem !== item) {
-          openItem.classList.remove('is-open');
-          const openBtn = openItem.querySelector('.faq-btn');
-          if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
-          const p = openItem.querySelector('.faq-panel');
-          if (p) p.style.maxHeight = null;
-        }
-      });
+  const syncPlay = () => {
+    const playing = !video.paused && !video.ended;
+    playBtn.dataset.state = playing ? "playing" : "paused";
+    playBtn.setAttribute("aria-label", playing ? "إيقاف الفيديو" : "تشغيل الفيديو");
+  };
 
-      if (isOpen) {
-        item.classList.remove('is-open');
-        btn.setAttribute('aria-expanded', 'false');
-        panel.style.maxHeight = null;
-      } else {
-        item.classList.add('is-open');
-        btn.setAttribute('aria-expanded', 'true');
-        panel.style.maxHeight = panel.scrollHeight + 'px';
-      }
-    });
+  const syncSound = () => {
+    const label = video.muted ? "تشغيل الصوت" : "كتم الصوت";
+    soundBtn.dataset.state = video.muted ? "off" : "on";
+    soundBtn.setAttribute("aria-label", label);
+    if (soundText) soundText.textContent = label;
+  };
+
+  playBtn.addEventListener("click", () => {
+    if (video.paused) {
+      const attempt = video.play();
+      if (attempt && typeof attempt.catch === "function") attempt.catch(function () {});
+    } else {
+      video.pause();
+    }
+  });
+
+  soundBtn.addEventListener("click", () => {
+    video.muted = !video.muted;
+    if (video.muted) return;
+    video.volume = 1;
+    if (video.paused) {
+      const attempt = video.play();
+      if (attempt && typeof attempt.catch === "function") attempt.catch(function () {});
+    }
+  });
+
+  video.addEventListener("play", syncPlay);
+  video.addEventListener("pause", syncPlay);
+  video.addEventListener("volumechange", syncSound);
+
+  syncPlay();
+  syncSound();
+  box.hidden = false;
+}
+
+function initHeroMotion() {
+  if (reduceMotion || typeof window.gsap === "undefined") return;
+
+  // Soft entrance for the text; styles are cleared when finished.
+  window.gsap.from(".hero-badge, .hero-title, .hero-lead, .hero-buy, .hero-points", {
+    y: 14,
+    opacity: 0,
+    duration: 0.6,
+    stagger: 0.07,
+    ease: "power2.out",
+    clearProps: "opacity,transform"
+  });
+
+  window.gsap.from(".hero-frame", {
+    y: 20,
+    opacity: 0,
+    duration: 0.65,
+    ease: "power2.out",
+    clearProps: "opacity,transform"
+  });
+
+  window.gsap.from(".hero-accent", {
+    y: 28,
+    opacity: 0,
+    duration: 0.75,
+    delay: 0.05,
+    ease: "power2.out",
+    clearProps: "opacity,transform"
   });
 }
 
-/* ========== Sticky bottom bar ========== */
-function initStickyBar() {
-  const bar = document.getElementById('stickyBar');
-  const hero = document.getElementById('hero');
-  if (!bar || !hero) return;
+// Offer countdown. The deadline is OFFER_END at the top of this file or data-offer-end on [data-offer].
+// While the offer runs, [data-price] shows 39. After it ends, every price switches to 58.
+function initOffer() {
+  const offer = document.querySelector("[data-offer]");
+  if (!offer) return;
 
-  const onScroll = function () {
-    const threshold = hero.offsetHeight * 0.6;
-    if (window.scrollY > threshold) {
-      bar.classList.add('is-visible');
-    } else {
-      bar.classList.remove('is-visible');
+  const offerPrice = offer.dataset.priceOffer || "٣٩";
+  const regularPrice = offer.dataset.priceRegular || "٥٨";
+  const prices = document.querySelectorAll("[data-price]");
+  const liveBox = offer.querySelector("[data-offer-live]");
+  const endedBox = offer.querySelector("[data-offer-ended]");
+  const timerBox = offer.querySelector("[role='timer']");
+  const cells = {
+    days: offer.querySelector('[data-count="days"]'),
+    hours: offer.querySelector('[data-count="hours"]'),
+    minutes: offer.querySelector('[data-count="minutes"]'),
+    seconds: offer.querySelector('[data-count="seconds"]')
+  };
+  const toArabic = (n) => {
+    const text = String(Math.max(0, Math.floor(n)));
+    return (text.length < 2 ? text.padStart(2, "0") : text).replace(/\d/g, (digit) => "٠١٢٣٤٥٦٧٨٩"[digit]);
+  };
+  const setPrices = (value) => prices.forEach((node) => { node.textContent = value; });
+
+  offer.querySelectorAll("[data-offer-price]").forEach((node) => { node.textContent = offerPrice; });
+  offer.querySelectorAll("[data-offer-regular]").forEach((node) => { node.textContent = regularPrice; });
+
+  const rawEnd = (offer.dataset.offerEnd && offer.dataset.offerEnd.trim()) || OFFER_END;
+  const end = Date.parse(rawEnd);
+
+  if (Number.isNaN(end)) {
+    setPrices(offerPrice);
+    offer.dataset.state = "unset";
+    if (timerBox) timerBox.setAttribute("aria-label", "العد التنازلي يظهر بعد تحديد موعد انتهاء العرض");
+    return;
+  }
+
+  let timer = 0;
+  let lastSec = -1;
+
+  const tick = () => {
+    const left = end - Date.now();
+
+    if (left <= 0) {
+      setPrices(regularPrice);
+      if (liveBox) liveBox.hidden = true;
+      if (endedBox) endedBox.hidden = false;
+      offer.dataset.state = "ended";
+      document.documentElement.dataset.offer = "ended";
+      return;
     }
+
+    const total = Math.floor(left / 1000);
+    const sec = total % 60;
+
+    if (cells.days) cells.days.textContent = toArabic(Math.floor(total / 86400));
+    if (cells.hours) cells.hours.textContent = toArabic(Math.floor((total % 86400) / 3600));
+    if (cells.minutes) cells.minutes.textContent = toArabic(Math.floor((total % 3600) / 60));
+
+    if (cells.seconds) {
+      cells.seconds.textContent = toArabic(sec);
+      if (!reduceMotion && lastSec !== sec) {
+        cells.seconds.dataset.tick = "1";
+        window.setTimeout(() => {
+          if (cells.seconds) cells.seconds.removeAttribute("data-tick");
+        }, 160);
+      }
+    }
+    lastSec = sec;
+
+    if (timerBox && cells.days && cells.hours && cells.minutes) {
+      timerBox.setAttribute("aria-label", "متبقٍ " + cells.days.textContent + " أيام و" + cells.hours.textContent + " ساعات و" + cells.minutes.textContent + " دقائق");
+    }
+    offer.dataset.state = "live";
+
+    const delay = Math.min((left % 1000) || 1000, 2147483647);
+    timer = window.setTimeout(tick, delay + 30);
   };
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  setPrices(offerPrice);
+  tick();
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible") return;
+    window.clearTimeout(timer);
+    tick();
+  });
 }
 
-/* ========== Counter animation ========== */
-function initCounters() {
-  const counters = document.querySelectorAll('[data-counter]');
-  if (!counters.length) return;
+// Proof section entrance motion and interactive count-up
+function initProofMotion() {
+  const proofSection = document.getElementById("proof");
+  if (!proofSection) return;
 
-  const animate = function (el) {
-    const target = parseInt(el.getAttribute('data-counter'), 10);
-    const suffix = el.getAttribute('data-suffix') || '';
-    const duration = 1600;
-    const start = performance.now();
+  const statNodes = proofSection.querySelectorAll("[data-stat-count]");
+  if (!statNodes.length) return;
 
-    const tick = function (now) {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const value = Math.floor(eased * target);
-      el.textContent = value.toLocaleString('ar-EG') + suffix;
-      if (progress < 1) requestAnimationFrame(tick);
+  const toArabic = (num, decimals = 0) => {
+    const fixed = Number(num).toFixed(decimals);
+    return fixed.replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+  };
+
+  let hasRun = false;
+
+  const triggerStats = () => {
+    if (hasRun) return;
+    hasRun = true;
+
+    // Instant set if reduced motion preferred
+    if (reduceMotion) {
+      statNodes.forEach((node) => {
+        const target = parseFloat(node.dataset.statCount);
+        const dec = parseInt(node.dataset.statDecimals || "0", 10);
+        node.textContent = toArabic(target, dec);
+      });
+      return;
+    }
+
+    // Orchestrated GSAP reveals
+    if (typeof window.gsap !== "undefined") {
+      window.gsap.from(".proof-stat", {
+        y: 20,
+        opacity: 0,
+        duration: 0.7,
+        stagger: 0.09,
+        ease: "power2.out",
+        clearProps: "opacity,transform"
+      });
+
+      window.gsap.from(".offer", {
+        y: 24,
+        opacity: 0,
+        duration: 0.8,
+        delay: 0.22,
+        ease: "power2.out",
+        clearProps: "opacity,transform"
+      });
+
+      window.gsap.from(".orgs-header > *, .org-slot", {
+        y: 16,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.08,
+        delay: 0.38,
+        ease: "power2.out",
+        clearProps: "opacity,transform"
+      });
+    }
+
+    // High precision RAF count-up
+    const duration = 1650;
+    const startTime = performance.now();
+
+    const animateCount = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOutCubic curve
+      const ease = 1 - Math.pow(1 - progress, 3);
+
+      statNodes.forEach((node) => {
+        const target = parseFloat(node.dataset.statCount);
+        const dec = parseInt(node.dataset.statDecimals || "0", 10);
+        const current = target * ease;
+        node.textContent = toArabic(current, dec);
+      });
+
+      if (progress < 1) {
+        window.requestAnimationFrame(animateCount);
+      } else {
+        statNodes.forEach((node) => {
+          const target = parseFloat(node.dataset.statCount);
+          const dec = parseInt(node.dataset.statDecimals || "0", 10);
+          node.textContent = toArabic(target, dec);
+        });
+      }
     };
 
-    requestAnimationFrame(tick);
+    window.requestAnimationFrame(animateCount);
   };
 
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            animate(entry.target);
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.4 }
-    );
-    counters.forEach(function (el) {
-      io.observe(el);
-    });
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          triggerStats();
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+
+    observer.observe(proofSection);
   } else {
-    counters.forEach(animate);
+    triggerStats();
   }
 }
 
-/* ========== Testimonials Swiper ========== */
-function initTestimonialsSwiper() {
-  if (typeof Swiper === 'undefined') return;
-  const el = document.querySelector('.testimonials-swiper');
-  if (!el) return;
+// Orchestrated entrance reveals for the bundle / "What You Get" section
+function initBundleMotion() {
+  const bundleSection = document.getElementById("what-you-get");
+  if (!bundleSection || reduceMotion || typeof window.gsap === "undefined") return;
 
-  new Swiper('.testimonials-swiper', {
-    slidesPerView: 1,
-    spaceBetween: 16,
-    loop: true,
-    autoplay: {
-      delay: 4500,
-      disableOnInteraction: false
-    },
-    pagination: {
-      el: '.testimonials-pagination',
-      clickable: true
-    },
-    breakpoints: {
-      768: { slidesPerView: 2 },
-      1024: { slidesPerView: 3 }
-    }
-  });
+  let hasRun = false;
+
+  const triggerBundle = () => {
+    if (hasRun) return;
+    hasRun = true;
+
+    window.gsap.from(".bundle-head > *", {
+      y: 18,
+      opacity: 0,
+      duration: 0.65,
+      stagger: 0.08,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+
+    window.gsap.from(".bundle-card", {
+      y: 24,
+      opacity: 0,
+      duration: 0.75,
+      stagger: 0.12,
+      delay: 0.15,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+
+    window.gsap.from(".bundle-bonus, .bundle-checkout > *", {
+      y: 18,
+      opacity: 0,
+      duration: 0.65,
+      stagger: 0.1,
+      delay: 0.35,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+  };
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          triggerBundle();
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -30px 0px" });
+
+    observer.observe(bundleSection);
+  } else {
+    triggerBundle();
+  }
 }
 
-function initYear() {
-  const yearEl = document.getElementById('year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+// Orchestrated entrance reveals for the testimonials / social proof section
+function initTestimonialsMotion() {
+  const testimonialsSection = document.getElementById("testimonials");
+  if (!testimonialsSection || reduceMotion || typeof window.gsap === "undefined") return;
+
+  let hasRun = false;
+
+  const triggerTestimonials = () => {
+    if (hasRun) return;
+    hasRun = true;
+
+    window.gsap.from(".testimonials-head > *", {
+      y: 18,
+      opacity: 0,
+      duration: 0.65,
+      stagger: 0.08,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+
+    window.gsap.from(".testi-quotes-grid > *", {
+      y: 22,
+      opacity: 0,
+      duration: 0.7,
+      stagger: 0.12,
+      delay: 0.12,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+
+    window.gsap.from(".testi-shot-frame", {
+      y: 20,
+      opacity: 0,
+      duration: 0.65,
+      stagger: 0.08,
+      delay: 0.25,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+
+    window.gsap.from(".testi-checkout > *", {
+      y: 16,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.08,
+      delay: 0.38,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+  };
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          triggerTestimonials();
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -30px 0px" });
+
+    observer.observe(testimonialsSection);
+  } else {
+    triggerTestimonials();
+  }
+}
+
+// Student Outputs section: entrance motion, smart viewport playback, and interactive controls
+function initStudentOutputsMotion() {
+  const section = document.getElementById("student-outputs");
+  if (!section) return;
+
+  const cards = section.querySelectorAll("[data-video-card]");
+  const videos = section.querySelectorAll(".student-video");
+
+  // Setup individual video controls & events
+  cards.forEach((card) => {
+    const video = card.querySelector(".student-video");
+    const soundBtn = card.querySelector("[data-video-unmute]");
+    const playBtn = card.querySelector("[data-video-play-toggle]");
+    const soundIcon = soundBtn ? soundBtn.querySelector(".sound-icon") : null;
+
+    if (!video) return;
+
+    // Ensure muted initially
+    video.muted = true;
+
+    // Sound toggle
+    if (soundBtn && soundIcon) {
+      soundBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (video.muted) {
+          // Mute all other student videos
+          videos.forEach((otherVideo) => {
+            if (otherVideo !== video) {
+              otherVideo.muted = true;
+              const otherCard = otherVideo.closest("[data-video-card]");
+              const otherIcon = otherCard ? otherCard.querySelector(".sound-icon") : null;
+              const otherBtn = otherCard ? otherCard.querySelector("[data-video-unmute]") : null;
+              if (otherIcon) {
+                otherIcon.classList.remove("sound-unmuted");
+                otherIcon.classList.add("sound-muted");
+              }
+              if (otherBtn) {
+                otherBtn.setAttribute("aria-label", "تشغيل الصوت");
+              }
+            }
+          });
+
+          video.muted = false;
+          soundIcon.classList.remove("sound-muted");
+          soundIcon.classList.add("sound-unmuted");
+          soundBtn.setAttribute("aria-label", "كتم الصوت");
+
+          if (video.paused) {
+            video.play().catch(() => {});
+          }
+        } else {
+          video.muted = true;
+          soundIcon.classList.remove("sound-unmuted");
+          soundIcon.classList.add("sound-muted");
+          soundBtn.setAttribute("aria-label", "تشغيل الصوت");
+        }
+      });
+    }
+
+    // Play/Pause toggle on video overlay
+    if (playBtn) {
+      playBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (video.paused) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    }
+
+    // Update card state on play/pause
+    video.addEventListener("play", () => {
+      card.classList.remove("is-paused");
+    });
+    video.addEventListener("pause", () => {
+      card.classList.add("is-paused");
+    });
+  });
+
+  // Smart Viewport Playback with IntersectionObserver
+  if ("IntersectionObserver" in window) {
+    const playbackObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!reduceMotion) {
+            videos.forEach((vid) => {
+              const attempt = vid.play();
+              if (attempt && typeof attempt.catch === "function") {
+                attempt.catch(() => {
+                  vid.closest("[data-video-card]")?.classList.add("is-paused");
+                });
+              }
+            });
+          }
+        } else {
+          videos.forEach((vid) => {
+            vid.pause();
+          });
+        }
+      });
+    }, { threshold: 0.15 });
+
+    playbackObserver.observe(section);
+  }
+
+  // Entrance animations with GSAP
+  if (reduceMotion || typeof window.gsap === "undefined") return;
+
+  let hasRun = false;
+  const triggerEntrance = () => {
+    if (hasRun) return;
+    hasRun = true;
+
+    window.gsap.from(".student-outputs-head > *", {
+      y: 18,
+      opacity: 0,
+      duration: 0.65,
+      stagger: 0.08,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+
+    window.gsap.from(".student-video-card", {
+      y: 26,
+      opacity: 0,
+      duration: 0.75,
+      stagger: 0.12,
+      delay: 0.15,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+
+    window.gsap.from(".student-outputs-checkout > *", {
+      y: 16,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.08,
+      delay: 0.35,
+      ease: "power2.out",
+      clearProps: "opacity,transform"
+    });
+  };
+
+  if ("IntersectionObserver" in window) {
+    const animObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          triggerEntrance();
+          animObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -30px 0px" });
+
+    animObserver.observe(section);
+  } else {
+    triggerEntrance();
+  }
 }
