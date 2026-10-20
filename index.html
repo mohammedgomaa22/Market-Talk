@@ -149,13 +149,6 @@
 
           <!-- 1. Animated Trust Statistics -->
           <div class="proof-board">
-            <div class="proof-head">
-              <span class="proof-eyebrow">
-                <span class="proof-dot" aria-hidden="true"></span>
-                إثبات الثقة | SOCIAL PROOF
-              </span>
-              <h2 id="proof-title" class="proof-kicker font-brand-display font-bold">أرقام تثبت الثقة</h2>
-            </div>
 
             <ul class="proof-stats">
               <li class="proof-stat" data-proof-item>
@@ -488,7 +481,7 @@
         <div class="testi-grid" data-testi-item>
 
           <!-- Screenshot 1: WhatsApp -->
-          <figure class="testi-shot-frame">
+          <figure class="testi-shot-frame" role="button" tabindex="0" data-testi-popup aria-label="عرض محادثة واتساب بالحجم الكامل" aria-haspopup="dialog">
             <div class="testi-shot-top">
               <span class="testi-app-badge app-whatsapp">واتساب</span>
               <span class="testi-shot-status">محادثة موثقة</span>
@@ -500,11 +493,15 @@
                 loading="lazy"
                 class="testi-shot-img"
               >
+              <span class="testi-zoom-hint" aria-hidden="true">
+                <span class="testi-zoom-icon">⤢</span>
+                <span>تكبير</span>
+              </span>
             </div>
           </figure>
 
           <!-- Screenshot 2: Instagram -->
-          <figure class="testi-shot-frame">
+          <figure class="testi-shot-frame" role="button" tabindex="0" data-testi-popup aria-label="عرض رسالة إنستغرام بالحجم الكامل" aria-haspopup="dialog">
             <div class="testi-shot-top">
               <span class="testi-app-badge app-instagram">إنستغرام</span>
               <span class="testi-shot-status">رسالة خاصة</span>
@@ -516,11 +513,15 @@
                 loading="lazy"
                 class="testi-shot-img"
               >
+              <span class="testi-zoom-hint" aria-hidden="true">
+                <span class="testi-zoom-icon">⤢</span>
+                <span>تكبير</span>
+              </span>
             </div>
           </figure>
 
           <!-- Screenshot 3: WhatsApp -->
-          <figure class="testi-shot-frame">
+          <figure class="testi-shot-frame" role="button" tabindex="0" data-testi-popup aria-label="عرض محادثة واتساب بالحجم الكامل" aria-haspopup="dialog">
             <div class="testi-shot-top">
               <span class="testi-app-badge app-whatsapp">واتساب</span>
               <span class="testi-shot-status">محادثة موثقة</span>
@@ -532,11 +533,15 @@
                 loading="lazy"
                 class="testi-shot-img"
               >
+              <span class="testi-zoom-hint" aria-hidden="true">
+                <span class="testi-zoom-icon">⤢</span>
+                <span>تكبير</span>
+              </span>
             </div>
           </figure>
 
           <!-- Screenshot 4: Instagram -->
-          <figure class="testi-shot-frame">
+          <figure class="testi-shot-frame" role="button" tabindex="0" data-testi-popup aria-label="عرض رسالة إنستغرام بالحجم الكامل" aria-haspopup="dialog">
             <div class="testi-shot-top">
               <span class="testi-app-badge app-instagram">إنستغرام</span>
               <span class="testi-shot-status">رسالة خاصة</span>
@@ -548,6 +553,10 @@
                 loading="lazy"
                 class="testi-shot-img"
               >
+              <span class="testi-zoom-hint" aria-hidden="true">
+                <span class="testi-zoom-icon">⤢</span>
+                <span>تكبير</span>
+              </span>
             </div>
           </figure>
 
@@ -716,6 +725,38 @@
     <!-- ===== END STUDENT OUTPUTS ===== -->
   </main>
   <!-- ===== END MAIN ===== -->
+
+  <!-- ===== TESTIMONIAL LIGHTBOX / POPUP MODAL ===== -->
+  <div id="testiModal" class="testi-modal" role="dialog" aria-modal="true" aria-label="معاينة رأي المشترك بالحجم الكامل" hidden>
+    <div class="testi-modal-backdrop" data-modal-close tabindex="-1"></div>
+    <div class="testi-modal-container">
+      <div class="testi-modal-panel">
+        <div class="testi-modal-header">
+          <div class="testi-modal-info">
+            <span id="testiModalBadge" class="testi-app-badge app-whatsapp">واتساب</span>
+            <span id="testiModalStatus" class="testi-shot-status">محادثة موثقة</span>
+          </div>
+          <button type="button" class="testi-modal-close-btn" data-modal-close aria-label="إغلاق النافذة">
+            <span class="testi-close-symbol" aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="testi-modal-viewer">
+          <button type="button" class="testi-modal-arrow testi-modal-prev" data-modal-prev aria-label="المحادثة السابقة">
+            <span aria-hidden="true">&#x203A;</span>
+          </button>
+          <div class="testi-modal-frame">
+            <img id="testiModalImg" src="" alt="" class="testi-modal-img">
+          </div>
+          <button type="button" class="testi-modal-arrow testi-modal-next" data-modal-next aria-label="المحادثة التالية">
+            <span aria-hidden="true">&#x2039;</span>
+          </button>
+        </div>
+        <div class="testi-modal-footer">
+          <span id="testiModalCounter" class="testi-modal-counter">١ من ٤</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== START FOOTER ===== -->
   <footer role="contentinfo">

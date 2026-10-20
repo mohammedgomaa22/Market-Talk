@@ -35,6 +35,7 @@ initOffer();
 initProofMotion();
 initBundleMotion();
 initTestimonialsMotion();
+initTestimonialPopup();
 initStudentOutputsMotion();
 
 function primeHeroVideo() {
@@ -450,6 +451,195 @@ function initTestimonialsMotion() {
     observer.observe(testimonialsSection);
   } else {
     triggerTestimonials();
+  }
+}
+
+// Lightbox popup modal for authentic testimonial screenshots
+function initTestimonialPopup() {
+  const modal = document.getElementById("testiModal");
+  const frames = document.querySelectorAll("[data-testi-popup]");
+  if (!modal || !frames.length) return;
+
+  const modalImg = document.getElementById("testiModalImg");
+  const modalBadge = document.getElementById("testiModalBadge");
+  const modalStatus = document.getElementById("testiModalStatus");
+  const modalCounter = document.getElementById("testiModalCounter");
+  const closeBtns = modal.querySelectorAll("[data-modal-close]");
+  const prevBtn = modal.querySelector("[data-modal-prev]");
+  const nextBtn = modal.querySelector("[data-modal-next]");
+  const viewer = modal.querySelector(".testi-modal-viewer");
+
+  const items = Array.from(frames).map((frame) => {
+    const img = frame.querySelector(".testi-shot-img");
+    const badge = frame.querySelector(".testi-app-badge");
+    const status = frame.querySelector(".testi-shot-status");
+    return {
+      src: img ? img.getAttribute("src") : "",
+      alt: img ? img.getAttribute("alt") || "" : "",
+      badgeText: badge ? badge.textContent.trim() : "",
+      badgeClass: badge && badge.classList.contains("app-instagram") ? "app-instagram" : "app-whatsapp",
+      statusText: status ? status.textContent.trim() : "",
+    };
+  });
+
+  const arabicDigits = ["١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩", "١٠"];
+  let currentIndex = 0;
+  let lastFocusedElement = null;
+
+  function renderCurrent() {
+    const item = items[currentIndex];
+    if (!item || !modalImg) return;
+
+    modalImg.style.opacity = "0.3";
+    modalImg.src = item.src;
+    modalImg.alt = item.alt;
+    modalImg.onload = () => {
+      modalImg.style.opacity = "1";
+    };
+
+    if (modalBadge) {
+      modalBadge.textContent = item.badgeText;
+      modalBadge.className = `testi-app-badge ${item.badgeClass}`;
+    }
+    if (modalStatus) {
+      modalStatus.textContent = item.statusText;
+    }
+    if (modalCounter) {
+      const curNum = arabicDigits[currentIndex] || String(currentIndex + 1);
+      const totalNum = arabicDigits[items.length - 1] || String(items.length);
+      modalCounter.textContent = `${curNum} من ${totalNum}`;
+    }
+  }
+
+  function openModal(index) {
+    lastFocusedElement = document.activeElement;
+    currentIndex = index;
+    renderCurrent();
+
+    modal.removeAttribute("hidden");
+    document.body.classList.add("testi-modal-open");
+
+    // Force reflow for smooth scale/fade transition
+    void modal.offsetWidth;
+    modal.classList.add("is-active");
+
+    const closeBtn = modal.querySelector(".testi-modal-close-btn");
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeModal() {
+    if (modal.hasAttribute("hidden")) return;
+
+    modal.classList.remove("is-active");
+    setTimeout(() => {
+      modal.setAttribute("hidden", "");
+      document.body.classList.remove("testi-modal-open");
+      if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+        lastFocusedElement.focus();
+      }
+    }, 220);
+  }
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % items.length;
+    renderCurrent();
+  }
+
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + items.length) % items.length;
+    renderCurrent();
+  }
+
+  // Bind click & keyboard triggers on cards
+  frames.forEach((frame, idx) => {
+    frame.addEventListener("click", () => openModal(idx));
+    frame.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openModal(idx);
+      }
+    });
+  });
+
+  // Bind close buttons (button and backdrop)
+  closeBtns.forEach((btn) => {
+    btn.addEventListener("click", closeModal);
+  });
+
+  // Bind navigation arrows
+  if (prevBtn) {
+    prevBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showPrev();
+    });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showNext();
+    });
+  }
+
+  // Keyboard navigation & trap
+  document.addEventListener("keydown", (e) => {
+    if (modal.hasAttribute("hidden")) return;
+
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeModal();
+      return;
+    }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      showPrev();
+      return;
+    }
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      showNext();
+      return;
+    }
+
+    if (e.key === "Tab") {
+      const focusable = modal.querySelectorAll("button:not([disabled])");
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  // Touch swipe support for mobile
+  if (viewer) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    viewer.addEventListener("touchstart", (e) => {
+      if (e.changedTouches.length) {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      }
+    }, { passive: true });
+
+    viewer.addEventListener("touchend", (e) => {
+      if (!e.changedTouches.length) return;
+      const diffX = e.changedTouches[0].screenX - touchStartX;
+      const diffY = e.changedTouches[0].screenY - touchStartY;
+      if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0) {
+          showPrev();
+        } else {
+          showNext();
+        }
+      }
+    }, { passive: true });
   }
 }
 
